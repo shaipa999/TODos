@@ -1,0 +1,6 @@
+flask
+requests
+redis
+influxdb
+influxdb-client[ciso]
+jaeger-client

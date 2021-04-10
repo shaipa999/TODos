@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  frontend:
+    build: ./Frontend/.
+    network_mode: "host"
+  todos:
+    build: ./TODOs/.
+    network_mode: "host"
+  users:
+    build: ./Users/.
+    network_mode: "host"
+  redis:
+    image: "redis:alpine"
+    network_mode: "host"
+  grafana:
+    image: grafana/grafana:latest
+    network_mode: "host"
+  influxdb:
+    build: ./influxdb/.
+    volumes:
+      - influxdbv2:/.influxdbv3
+    network_mode: "host"
+  influxdb_cli:
+    image: quay.io/influxdb/influxdb:v2.0.3
+    entrypoint: influx setup --bucket mybucket -t mytoken -o myorg --username=admin --password=admin12345 -f
+    restart: on-failure:10
+    network_mode: "host"
+    depends_on:
+      - influxdb
+  jaeger:
+    image: jaegertracing/all-in-one:1.22
+    network_mode: "host"
+    environment:
+     - COLLECTOR_ZIPKIN_HOST_PORT=9411
+
+volumes:
+  influxdbv2:
